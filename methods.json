@@ -1,0 +1,353 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Spring-Social Network",
+		"_postman_id": "3b176030-8945-bedd-7446-dbeac3a5f7d5",
+		"description": "story for spring network",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Sign up / Login scenario",
+			"description": "",
+			"item": [
+				{
+					"name": "http://localhost:8080/users/sign-up",
+					"request": {
+						"url": "http://localhost:8080/users/sign-up",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nom\": \"Joe\",\r\n    \"prenom\": \"Dalton\",\r\n    \"username\": \"jdalton\",\r\n    \"password\": \"luckyluke\",\r\n    \"birthday\": \"1998-10-02\",\r\n    \"description\": \"The best of the dalton's\"\r\n}"
+						},
+						"description": "Create user"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/login",
+					"request": {
+						"url": "http://localhost:8080/login",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"jdalton\",\r\n    \"password\": \"luckyluke\"\r\n}"
+						},
+						"description": "When you login you will get the token in the header response that you will need in the header\nLike this: \"Authorization: Bearer XXX.YYY.ZZZ\""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Add friend scenario (send a friend request and accept it)",
+			"description": "",
+			"item": [
+				{
+					"name": "localhost:8080/users/1/requestFriend",
+					"request": {
+						"url": "localhost:8080/users/1/requestFriend",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqZGFsdG9uIiwiZXhwIjoxNjEwNDc1NjkyfQ.9Gmpwa9ooVuVZIp3XtYe3v8SiNa2pSb0mp-wzSf9SYcCUKDfzKVoILLVWiGskiucH9c0ZBvka2F9_pIpJKg7zQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "6"
+						},
+						"description": "user 1 request friend to user 6 (new user)"
+					},
+					"response": []
+				},
+				{
+					"name": "localhost:8080/users/6/accept/1",
+					"request": {
+						"url": "localhost:8080/users/6/accept/1",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqZGFsdG9uIiwiZXhwIjoxNjEwNDc1NjkyfQ.9Gmpwa9ooVuVZIp3XtYe3v8SiNa2pSb0mp-wzSf9SYcCUKDfzKVoILLVWiGskiucH9c0ZBvka2F9_pIpJKg7zQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "user 6 accept request from user 1 (they are now friends) "
+					},
+					"response": []
+				},
+				{
+					"name": "localhost:8080/users/2/deny/1",
+					"request": {
+						"url": "localhost:8080/users/2/deny/1",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqZGFsdG9uIiwiZXhwIjoxNjEwNDc1NjkyfQ.9Gmpwa9ooVuVZIp3XtYe3v8SiNa2pSb0mp-wzSf9SYcCUKDfzKVoILLVWiGskiucH9c0ZBvka2F9_pIpJKg7zQ",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "/posts endpoint",
+			"description": "",
+			"item": [
+				{
+					"name": "See posts of friends and public posts",
+					"request": {
+						"url": "http://localhost:8080/posts/show",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqZGFsdG9uIiwiZXhwIjoxNjEwNDc1NjkyfQ.9Gmpwa9ooVuVZIp3XtYe3v8SiNa2pSb0mp-wzSf9SYcCUKDfzKVoILLVWiGskiucH9c0ZBvka2F9_pIpJKg7zQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "show viewable post (id 1 is private so we cannot see the post)"
+					},
+					"response": []
+				},
+				{
+					"name": "GET /posts",
+					"request": {
+						"url": "http://localhost:8080/posts",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqZGFsdG9uIiwiZXhwIjoxNjEwNDc1NjkyfQ.9Gmpwa9ooVuVZIp3XtYe3v8SiNa2pSb0mp-wzSf9SYcCUKDfzKVoILLVWiGskiucH9c0ZBvka2F9_pIpJKg7zQ"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "show viewable post (id 1 is private so we cannot see the post)"
+					},
+					"response": []
+				},
+				{
+					"name": "GET /posts/id",
+					"request": {
+						"url": "http://localhost:8080/posts/1",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqZGFsdG9uIiwiZXhwIjoxNjEwNDc1NjkyfQ.9Gmpwa9ooVuVZIp3XtYe3v8SiNa2pSb0mp-wzSf9SYcCUKDfzKVoILLVWiGskiucH9c0ZBvka2F9_pIpJKg7zQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "PUT /posts/id",
+					"request": {
+						"url": {
+							"raw": "http://localhost:8080/posts/4?",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"posts",
+								"4"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							],
+							"variable": []
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqZGFsdG9uIiwiZXhwIjoxNjEwNDc1NjkyfQ.9Gmpwa9ooVuVZIp3XtYe3v8SiNa2pSb0mp-wzSf9SYcCUKDfzKVoILLVWiGskiucH9c0ZBvka2F9_pIpJKg7zQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"text\": \"Non aux manifestations!\",\n\t\"user_id\": 2,\n\t\"private_post\": false\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "POST /posts/",
+					"request": {
+						"url": "http://localhost:8080/posts",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqZGFsdG9uIiwiZXhwIjoxNjEwNDc1NjkyfQ.9Gmpwa9ooVuVZIp3XtYe3v8SiNa2pSb0mp-wzSf9SYcCUKDfzKVoILLVWiGskiucH9c0ZBvka2F9_pIpJKg7zQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"text\": \"The cake is a lie\",\n\t\"user_id\": 5,\n\t\"private_post\": true\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /posts/id",
+					"request": {
+						"url": "http://localhost:8080/posts/1",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqZGFsdG9uIiwiZXhwIjoxNjEwNDc1NjkyfQ.9Gmpwa9ooVuVZIp3XtYe3v8SiNa2pSb0mp-wzSf9SYcCUKDfzKVoILLVWiGskiucH9c0ZBvka2F9_pIpJKg7zQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "/users endpoint",
+			"description": "",
+			"item": [
+				{
+					"name": "GET /users",
+					"request": {
+						"url": "http://localhost:8080/users",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqZGFsdG9uIiwiZXhwIjoxNjEwNDc1NjkyfQ.9Gmpwa9ooVuVZIp3XtYe3v8SiNa2pSb0mp-wzSf9SYcCUKDfzKVoILLVWiGskiucH9c0ZBvka2F9_pIpJKg7zQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "GET /users/id",
+					"request": {
+						"url": "http://localhost:8080/users/1",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqZGFsdG9uIiwiZXhwIjoxNjEwNDc1NjkyfQ.9Gmpwa9ooVuVZIp3XtYe3v8SiNa2pSb0mp-wzSf9SYcCUKDfzKVoILLVWiGskiucH9c0ZBvka2F9_pIpJKg7zQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "POST /users",
+					"request": {
+						"url": "http://localhost:8080/users",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"nom\": \"titi\",\n\t\"prenom\": \"toto\",\n\t\"username\": \"tata\",\n\t\"password\": \"tota\",\n\t\"birthday\": \"1998-10-02\",\n\t\"description\": \"The best of the tato\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "PUT /users/id",
+					"request": {
+						"url": "http://localhost:8080/users/2",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqZGFsdG9uIiwiZXhwIjoxNjEwNDc1NjkyfQ.9Gmpwa9ooVuVZIp3XtYe3v8SiNa2pSb0mp-wzSf9SYcCUKDfzKVoILLVWiGskiucH9c0ZBvka2F9_pIpJKg7zQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"nom\": \"sasa\",\n\t\"prenom\": \"sisi\",\n\t\"username\": \"sosa\",\n    \"password\": \"soso\",\n\t\"birthday\": \"1998-10-02\",\n\t\"description\": \"The best of the sasa\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /users/id",
+					"request": {
+						"url": "http://localhost:8080/users/2",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqZGFsdG9uIiwiZXhwIjoxNjEwNDc1NjkyfQ.9Gmpwa9ooVuVZIp3XtYe3v8SiNa2pSb0mp-wzSf9SYcCUKDfzKVoILLVWiGskiucH9c0ZBvka2F9_pIpJKg7zQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
