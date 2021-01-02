@@ -1,75 +1,91 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.UserEntity;
-import com.example.demo.exception.RessourceNotFoundException;
-import com.example.demo.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletResponse;
 
-@RestController
-@RequestMapping(path = "/api")
+import com.example.demo.entity.UserEntity;
+import com.example.demo.services.userService.UserService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.data.rest.webmvc.BasePathAwareController;
+import org.springframework.data.rest.webmvc.RepositoryRestController;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.*;
+
+@BasePathAwareController
 public class UserController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    /*
-    Another method with @RequestParam (replace get All method) -> I didn't create this features for the other controllers
-    in order to keep them very simple
-     */
-    @GetMapping("/users")
-    public Iterable<UserEntity> getAllUsers(){
-        return this.userService.getAllUser();
-    }
-/*
+    @PostMapping("/users")
+    public ResponseEntity redirectSignUp() throws URISyntaxException {
+        HttpHeaders headers = new HttpHeaders();
+        if(System.getenv("PROD_URL") != null) {
+            headers.setLocation(new URI(System.getenv("PROD_URL") + "/users/sign-up"));
+        
+        } else headers.setLocation(new URI("http://localhost:8080/users/sign-up"));
 
-    @GetMapping("/user")
-    public Iterable<UserEntity> getAllAdresseParam(@RequestParam(value = "id_adresse", required = false) List<String> id_adresse,
-                                                   @RequestParam(value = "libelle", required = false)List<String> libelle,
-                                                   @RequestParam(value = "id_concessionaire", required = false)List<String> id_concessionaire){
-        return this.userService.getAlluserParam(id_adresse, libelle, id_concessionaire);
+        return new ResponseEntity<>(headers, HttpStatus.TEMPORARY_REDIRECT);
     }
 
-    @GetMapping("/user/{id}")
-    public Optional<UserEntity>getAdresseById(@PathVariable("id") int id){
-    return this.userService.getUserById(id);
+    @PostMapping("/users/sign-up")
+    public ResponseEntity signUp(@RequestBody UserEntity user) {
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        userService.save(user);
+        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping("/user")
-    public UserEntity addAdresseById(@RequestBody UserEntity userEntity) {
-        return this.userService.addUser(userEntity);
+    @PostMapping("/users/{requester_id}/requestFriend")
+    public ResponseEntity requestFriend(@PathVariable("requester_id") int requester_id, @RequestBody int requested_id){
+        System.out.println(requested_id);
+        UserEntity requested = userService.getUserById(requested_id).get();
+        userService.getUserById(requester_id)
+                .map(requester -> {
+                            List list1 = requester.getRequestTo();
+                            list1.add(requested);
+                            requester.setRequestTo(list1);
+                            return userService.save(requester);
+                        }
+                );
+
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @DeleteMapping("/user/{id}")
-    public Map<String, Boolean> deleteAdresseById(@PathVariable("id") int id) throws RessourceNotFoundException {
-        if(this.userService.getUserById(id).get().equals(null))
-            throw new RessourceNotFoundException("Not found any address to this Id ::" + id);
-        userService.deleteUserById(id);
+    @GetMapping("/users/{requested_id}/accept/{requester_id}")
+    public ResponseEntity acceptRequest(@PathVariable("requested_id") int requested_id, @PathVariable("requester_id") int requester_id){
+        String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserEntity accepter = userService.getUserByUserName(username);
+        UserEntity requester = userService.getUserById(requester_id).get();
 
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("deleted", Boolean.TRUE);
-        return response;
+        userService.addFriends(requested_id, requester_id);
+        userService.addFriends(requester_id, requested_id);
+        userService.deleteRequest(requester_id, requested_id);
+
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @PutMapping("/user/{id}")
-    public UserEntity updateAdresseById(@PathVariable("id") int id, @RequestBody UserEntity userEntity) throws RessourceNotFoundException {
-        UserEntity user = userService.getUserById(id).get();
-        if(user.equals(null))
-            throw new RessourceNotFoundException("Not found any address to this Id ::" + id);
+    @GetMapping("/users/{requested_id}/deny/{requester_id}")
+    public ResponseEntity denyRequest(@PathVariable("requested_id") int requested_id, @PathVariable("requester_id") int requester_id){
+        String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserEntity accepter = userService.getUserByUserName(username);
+        UserEntity requester = userService.getUserById(requester_id).get();
 
-        user.setId_user(userEntity.getId_user());
-        user.setNom(userEntity.getNom());
-        user.setPassword(user.getPassword());
-        userService.addUser(user);
-        return user;
+        userService.deleteRequest(requester_id, requested_id);
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
-*/
-
 
 }
