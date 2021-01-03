@@ -19,6 +19,11 @@ public class PostController {
     @Autowired
     private UserService userService;
 
+
+    /**
+     * see all public or friend posts
+     * @return
+     */
     @GetMapping("/posts/show")
     public @ResponseBody Iterable<PostEntity> showPost(){
         String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

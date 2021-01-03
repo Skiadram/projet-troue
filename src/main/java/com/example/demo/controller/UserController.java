@@ -31,6 +31,12 @@ public class UserController {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+
+    /**
+     * set location to signup
+     * @return response
+     * @throws URISyntaxException
+     */
     @PostMapping("/users")
     public ResponseEntity redirectSignUp() throws URISyntaxException {
         HttpHeaders headers = new HttpHeaders();
@@ -42,12 +48,24 @@ public class UserController {
         return new ResponseEntity<>(headers, HttpStatus.TEMPORARY_REDIRECT);
     }
 
+    /**
+     * Create new user
+     * @param user user to create
+     * @return response status
+     */
     @PostMapping("/users/sign-up")
     public ResponseEntity signUp(@RequestBody UserEntity user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userService.save(user);
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
+
+    /**
+     * add a friend request
+     * @param requester_id requester of the friend request
+     * @param requested_id requested  of the friend request
+     * @return
+     */
 
     @PostMapping("/users/{requester_id}/requestFriend")
     public ResponseEntity requestFriend(@PathVariable("requester_id") int requester_id, @RequestBody int requested_id){
@@ -65,6 +83,13 @@ public class UserController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
+
+    /**
+     * accept friend request
+     * @param requested_id request friend to accept
+     * @param requester_id requester friend to accept
+     * @return response status
+     */
     @GetMapping("/users/{requested_id}/accept/{requester_id}")
     public ResponseEntity acceptRequest(@PathVariable("requested_id") int requested_id, @PathVariable("requester_id") int requester_id){
         String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -77,6 +102,13 @@ public class UserController {
 
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
+
+    /**
+     * deny friend request
+     * @param requested_id request friend to deny
+     * @param requester_id requester friend to deny
+     * @return response status
+     */
 
     @GetMapping("/users/{requested_id}/deny/{requester_id}")
     public ResponseEntity denyRequest(@PathVariable("requested_id") int requested_id, @PathVariable("requester_id") int requester_id){
