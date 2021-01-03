@@ -12,9 +12,9 @@ In this proejct you can :
 
 # Run the project with maven 
 
-> mvn clean install
-> docker build -t projet-troue-docker .
-> docker run -d -p 8080:8080 projet-troue-docker
+`mvn clean install
+docker build -t projet-troue-docker .
+docker run -d -p 8080:8080 projet-troue-docker`
 
 # Authors
 * @Skiadram - Neel Coffin
