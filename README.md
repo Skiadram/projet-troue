@@ -12,11 +12,9 @@ In this proejct you can :
 
 # Run the project with maven 
 
-> maven clean && maven spring-boot:run
+> mvn clean install
+> docker build -t projet-troue-docker .
+> docker run -d -p 8080:8080 projet-troue-docker
 
 # Authors
-
-* @verzelea - Arthur Verzele
-* @Un-dev - Francois Lannoy
 * @Skiadram - Neel Coffin
-* @Galimede - Mathieu Degand
