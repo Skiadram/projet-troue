@@ -10,6 +10,7 @@ In this project you can :
 * You can also see your friend requests, accept them and send friend reuests to other people (more details on these endpoints in the  `methods.json` file)
 
 -> A list of pre-filled endpoints are available in the `methods.json`file that you can import in postman/insomnia... to try the endpoints easily
+IMPORTANT : pour les requêtes, bien vérifier que le body envoi du JSON et PAS du text sinon cela provoque des erreurs spring boot
 
 # Objectif sécurité
 
